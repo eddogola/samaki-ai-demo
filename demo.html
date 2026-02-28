@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Samaki.ai</title>
+<title>Samaki.ai — Live Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
@@ -26,69 +26,51 @@
     --mono:      'DM Mono', monospace;
     --sans:      'DM Sans', sans-serif;
     --radius:    6px;
+    --header-h:  52px;
+    --footer-h:  80px;
   }
 
   html, body {
     height: 100%;
+    height: 100dvh;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--sans);
     overflow: hidden;
   }
 
-  /* ── Layout ───────────────────────────────────── */
+  /* ── Layout ── */
   #app {
     display: grid;
     grid-template-columns: 1fr 300px;
-    grid-template-rows: 52px 1fr 80px;
+    grid-template-rows: var(--header-h) 1fr var(--footer-h);
     grid-template-areas:
       "header  header"
       "viewer  sidebar"
       "footer  footer";
-    height: 100vh;
-    gap: 0;
+    height: 100dvh;
     background: var(--border);
   }
 
-  /* ── Header ───────────────────────────────────── */
+  /* ── Header ── */
   #header {
     grid-area: header;
     background: var(--surface);
     display: flex;
     align-items: center;
     padding: 0 20px;
-    gap: 20px;
+    gap: 12px;
     border-bottom: 1px solid var(--border);
+    min-width: 0;
   }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .logo { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .logo a { display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
+  .logo-icon { font-size: 20px; line-height: 1; }
+  .logo-name { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
+  .logo-name span { color: var(--accent); }
 
-  .logo-icon {
-    font-size: 20px;
-    line-height: 1;
-  }
-
-  .logo-name {
-    font-family: var(--sans);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ink);
-    letter-spacing: -0.02em;
-  }
-
-  .logo-name span {
-    color: var(--accent);
-  }
-
-  .header-divider {
-    width: 1px;
-    height: 20px;
-    background: var(--border);
-  }
+  .header-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
 
   .header-chip {
     font-family: var(--mono);
@@ -99,34 +81,36 @@
     border-radius: 4px;
     padding: 3px 8px;
     letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .header-right {
-    margin-left: auto;
-    display: flex;
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  #status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 2.5s ease-in-out infinite; }
+  #status-label { font-size: 11px; color: var(--ink-mid); font-weight: 500; white-space: nowrap; }
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+  /* Sidebar toggle — hidden on desktop */
+  #sidebar-toggle {
+    display: none;
     align-items: center;
-    gap: 10px;
-  }
-
-  #status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 2.5s ease-in-out infinite;
-  }
-
-  #status-label {
-    font-size: 11px;
+    justify-content: center;
+    width: 32px; height: 32px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 15px;
     color: var(--ink-mid);
-    font-weight: 500;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    font-family: var(--mono);
   }
+  #sidebar-toggle:hover { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
+  #sidebar-toggle.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.35; }
-  }
-
-  /* ── Viewer ───────────────────────────────────── */
+  /* ── Viewer ── */
   #viewer {
     grid-area: viewer;
     background: #111;
@@ -135,28 +119,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
+    min-height: 0;
   }
 
-  #video {
-    max-width: 100%;
-    max-height: 100%;
-    display: block;
-  }
+  #video { max-width: 100%; max-height: 100%; display: block; }
 
-  #overlay-canvas {
-    position: absolute;
-    top: 0; left: 0;
-    pointer-events: none;
-  }
+  #overlay-canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
 
-  #hit-layer {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    cursor: crosshair;
-  }
+  #hit-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
 
-  /* ── Tooltip ──────────────────────────────────── */
+  /* ── Tooltip ── */
   #tooltip {
     position: fixed;
     display: none;
@@ -169,73 +142,20 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
     overflow: hidden;
   }
-
-  .tt-header {
-    background: var(--ink);
-    color: #fff;
-    font-family: var(--sans);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 8px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .tt-stage-badge {
-    font-size: 9px;
-    font-weight: 500;
-    background: rgba(255,255,255,0.15);
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-family: var(--mono);
-    letter-spacing: 0.05em;
-  }
-
-  .tt-body {
-    padding: 8px 12px;
-  }
-
-  .tt-section {
-    font-family: var(--mono);
-    font-size: 8.5px;
-    letter-spacing: 0.1em;
-    color: var(--ink-dim);
-    margin: 10px 0 5px;
-    text-transform: uppercase;
-  }
+  .tt-header { background: var(--ink); color: #fff; font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+  .tt-stage-badge { font-size: 9px; font-weight: 500; background: rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 3px; font-family: var(--mono); letter-spacing: 0.05em; }
+  .tt-body { padding: 8px 12px; }
+  .tt-section { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.1em; color: var(--ink-dim); margin: 10px 0 5px; text-transform: uppercase; }
   .tt-section:first-child { margin-top: 2px; }
-
-  .tt-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 0 0 5px;
-  }
-
-  .tt-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2.5px 0;
-  }
-
-  .tt-label {
-    font-size: 11px;
-    color: var(--ink-mid);
-  }
-
-  .tt-value {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink);
-    font-weight: 500;
-  }
-
+  .tt-divider { height: 1px; background: var(--border); margin: 0 0 5px; }
+  .tt-row { display: flex; justify-content: space-between; align-items: center; padding: 2.5px 0; }
+  .tt-label { font-size: 11px; color: var(--ink-mid); }
+  .tt-value { font-family: var(--mono); font-size: 11px; color: var(--ink); font-weight: 500; }
   .tt-value.good  { color: var(--green); }
   .tt-value.warn  { color: var(--amber); }
   .tt-value.alert { color: var(--red);   }
 
-  /* ── Sidebar ──────────────────────────────────── */
+  /* ── Sidebar ── */
   #sidebar {
     grid-area: sidebar;
     background: var(--surface2);
@@ -243,153 +163,29 @@
     flex-direction: column;
     border-left: 1px solid var(--border);
     overflow: hidden;
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
   }
+  .sb-section { border-bottom: 1px solid var(--border); padding: 14px 16px; }
+  .sb-title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; color: var(--ink-dim); text-transform: uppercase; margin-bottom: 12px; }
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 10px; }
+  .metric-label { font-family: var(--mono); font-size: 8px; color: var(--ink-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 5px; }
+  .metric-value { font-family: var(--sans); font-size: 20px; font-weight: 600; color: var(--ink); line-height: 1; letter-spacing: -0.02em; }
+  .metric-unit { font-size: 10px; color: var(--ink-dim); font-weight: 400; margin-left: 1px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .bar-label { font-family: var(--mono); font-size: 9px; color: var(--ink-mid); width: 56px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 3px; background: var(--border); border-radius: 2px; position: relative; overflow: hidden; }
+  .bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s ease; }
+  .bar-val { font-family: var(--mono); font-size: 9px; color: var(--ink-mid); width: 20px; text-align: right; }
+  #track-list { flex: 1; overflow-y: auto; padding: 4px 0; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  .track-item { display: flex; align-items: center; gap: 9px; padding: 6px 16px; cursor: pointer; transition: background 0.1s; border-left: 2px solid transparent; }
+  .track-item:hover { background: var(--accent-lt); border-left-color: var(--accent); }
+  .track-swatch { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .track-name { font-family: var(--mono); font-size: 10px; color: var(--ink); flex: 1; }
+  .track-stage { font-size: 9px; color: var(--ink-dim); }
+  .track-health { font-family: var(--mono); font-size: 10px; font-weight: 500; min-width: 24px; text-align: right; }
 
-  .sb-section {
-    border-bottom: 1px solid var(--border);
-    padding: 14px 16px;
-  }
-
-  .sb-title {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    color: var(--ink-dim);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  /* Metrics grid */
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
-
-  .metric-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 9px 10px;
-  }
-
-  .metric-label {
-    font-family: var(--mono);
-    font-size: 8px;
-    color: var(--ink-dim);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-
-  .metric-value {
-    font-family: var(--sans);
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--ink);
-    line-height: 1;
-    letter-spacing: -0.02em;
-  }
-
-  .metric-unit {
-    font-size: 10px;
-    color: var(--ink-dim);
-    font-weight: 400;
-    margin-left: 1px;
-  }
-
-  /* Bar distribution */
-  .bar-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 7px;
-  }
-
-  .bar-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--ink-mid);
-    width: 56px;
-    flex-shrink: 0;
-  }
-
-  .bar-track {
-    flex: 1;
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .bar-fill {
-    position: absolute;
-    left: 0; top: 0; height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.3s ease;
-  }
-
-  .bar-val {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--ink-mid);
-    width: 20px;
-    text-align: right;
-  }
-
-  /* Track list */
-  #track-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 4px 0;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-
-  .track-item {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 6px 16px;
-    cursor: pointer;
-    transition: background 0.1s;
-    border-left: 2px solid transparent;
-  }
-
-  .track-item:hover {
-    background: var(--accent-lt);
-    border-left-color: var(--accent);
-  }
-
-  .track-swatch {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .track-name {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink);
-    flex: 1;
-  }
-
-  .track-stage {
-    font-size: 9px;
-    color: var(--ink-dim);
-  }
-
-  .track-health {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 500;
-    min-width: 24px;
-    text-align: right;
-  }
-
-  /* ── Footer ───────────────────────────────────── */
+  /* ── Footer ── */
   #footer {
     grid-area: footer;
     background: var(--surface);
@@ -399,46 +195,13 @@
     justify-content: center;
     padding: 0 20px;
     gap: 10px;
+    min-width: 0;
   }
-
-  #timeline-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  #time-display {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-mid);
-    width: 84px;
-    flex-shrink: 0;
-  }
-
-  #timeline {
-    flex: 1;
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  #timeline-progress {
-    position: absolute;
-    left: 0; top: 0; height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    pointer-events: none;
-    transition: width 0.05s linear;
-  }
-
-  #controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  #timeline-wrap { display: flex; align-items: center; gap: 12px; }
+  #time-display { font-family: var(--mono); font-size: 11px; color: var(--ink-mid); width: 84px; flex-shrink: 0; }
+  #timeline { flex: 1; height: 4px; background: var(--border); border-radius: 2px; cursor: pointer; position: relative; overflow: hidden; }
+  #timeline-progress { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); border-radius: 2px; pointer-events: none; transition: width 0.05s linear; }
+  #controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
   button {
     background: var(--surface);
@@ -447,75 +210,103 @@
     color: var(--ink-mid);
     font-family: var(--mono);
     font-size: 10px;
-    padding: 4px 10px;
+    padding: 5px 10px;
     cursor: pointer;
     transition: all 0.12s;
     letter-spacing: 0.03em;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
   }
+  button:hover  { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+  button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  button:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--accent-lt);
-  }
+  #fish-count-live { font-family: var(--mono); font-size: 10px; color: var(--ink-dim); margin-left: auto; white-space: nowrap; }
 
-  button.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-
-  #fish-count-live {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink-dim);
-    margin-left: auto;
-  }
-
-  /* ── Loading ───────────────────────────────────── */
-  #loading {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 9000;
-    gap: 16px;
-  }
-
-  .loading-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
+  /* ── Loading ── */
+  #loading { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9000; gap: 16px; }
+  .loading-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .loading-logo-icon { font-size: 28px; }
-
-  .loading-logo-name {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--ink);
-    letter-spacing: -0.03em;
-  }
-
+  .loading-logo-name { font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.03em; }
   .loading-logo-name span { color: var(--accent); }
-
-  .spinner {
-    width: 28px; height: 28px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+  .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  #loading-msg { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.06em; text-align: center; padding: 0 24px; }
 
-  #loading-msg {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-dim);
-    letter-spacing: 0.06em;
+  /* Scrim behind mobile sidebar */
+  #sb-scrim {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(26,25,22,0.4);
+    z-index: 499;
+    backdrop-filter: blur(1px);
+  }
+  #sb-scrim.open { display: block; }
+
+  /* ══════════════════════════════════════════
+     TABLET  ≤ 860px — sidebar becomes a drawer
+  ══════════════════════════════════════════ */
+  @media (max-width: 860px) {
+    #app {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "header"
+        "viewer"
+        "footer";
+    }
+
+    #sidebar-toggle { display: flex; }
+
+    /* Float sidebar as right-edge drawer */
+    #sidebar {
+      position: fixed;
+      top: var(--header-h);
+      right: 0;
+      bottom: var(--footer-h);
+      width: min(300px, 86vw);
+      z-index: 500;
+      box-shadow: -8px 0 32px rgba(0,0,0,0.14);
+      transform: translateX(100%);
+      border-left: 1px solid var(--border);
+    }
+    #sidebar.open { transform: translateX(0); }
+  }
+
+  /* ══════════════════════════════════════════
+     MOBILE  ≤ 520px
+  ══════════════════════════════════════════ */
+  @media (max-width: 520px) {
+    :root {
+      --header-h: 48px;
+      --footer-h: 84px;
+    }
+
+    #header { padding: 0 12px; gap: 8px; }
+
+    /* Hide secondary chips to avoid overflow */
+    .chip-hide { display: none; }
+    #status-label { display: none; }
+
+    .logo-name { font-size: 14px; }
+    .header-chip { font-size: 9px; padding: 2px 6px; }
+
+    #footer { padding: 0 12px; gap: 8px; }
+    #time-display { width: 72px; font-size: 10px; }
+
+    button { padding: 5px 8px; font-size: 9px; }
+
+    /* Tooltip: don't overflow viewport edge */
+    #tooltip { width: min(256px, calc(100vw - 20px)); }
+  }
+
+  /* ══════════════════════════════════════════
+     TINY  ≤ 360px
+  ══════════════════════════════════════════ */
+  @media (max-width: 360px) {
+    #status-dot { display: none; }
+    .header-chip { display: none; }
+    .header-divider { display: none; }
+    #time-display { width: 60px; font-size: 9px; }
+    button { padding: 4px 6px; font-size: 9px; }
   }
 </style>
 </head>
@@ -530,29 +321,32 @@
   <div id="loading-msg">Loading track data...</div>
 </div>
 
+<!-- mobile scrim -->
+<div id="sb-scrim"></div>
+
 <div id="app" style="display:none;">
 
   <header id="header">
     <div class="logo">
-      <a style="text-decoration:none;color:inherit;"href="/">
-      <span class="logo-icon">🎣</span>
-      <span class="logo-name">samaki<span>.ai</span></span>
+      <a href="/">
+        <span class="logo-icon">🎣</span>
+        <span class="logo-name">samaki<span>.ai</span></span>
       </a>
-      <!--   <a class="nav-logo" href="/">🎣 samaki<span>.ai</span></a> -->
     </div>
     <div class="header-divider"></div>
     <span class="header-chip">MULTI-TRACK</span>
-    <span class="header-chip" id="meta-fps">— fps</span>
-    <span class="header-chip" id="meta-scale">— mm/px</span>
+    <span class="header-chip chip-hide" id="meta-fps">— fps</span>
+    <span class="header-chip chip-hide" id="meta-scale">— mm/px</span>
     <div class="header-right">
       <div id="status-dot"></div>
       <span id="status-label">Live playback</span>
+      <button id="sidebar-toggle" aria-label="Toggle stats">☰</button>
     </div>
   </header>
 
   <div id="viewer">
     <video id="video" src="https://pub-d6fad642c9fc4063b8b0997cc8c90363.r2.dev/swimming_fish.mp4" preload="auto" playsinline>
-      Your browser does not support this video format. Try converting to H.264 mp4.
+      Your browser does not support this video format.
     </video>
     <canvas id="overlay-canvas"></canvas>
     <div id="hit-layer"></div>
@@ -620,7 +414,7 @@
 </div>
 
 <script>
-// ─── PALETTE — distinct, works on light backgrounds ───────────────────────────
+// ─── PALETTE ──────────────────────────────────────────────────────────────────
 const PALETTE = [
   '#2563eb','#16a34a','#d97706',
   '#db2777','#7c3aed','#0891b2',
@@ -633,14 +427,36 @@ let trackSummaries = {};
 let videoFps       = 30;
 let videoMeta      = {};
 
+// ─── SIDEBAR TOGGLE (mobile) ──────────────────────────────────────────────────
+const sidebarEl  = document.getElementById('sidebar');
+const sbScrim    = document.getElementById('sb-scrim');
+const sbToggle   = document.getElementById('sidebar-toggle');
+
+function openSidebar() {
+  sidebarEl.classList.add('open');
+  sbScrim.classList.add('open');
+  sbToggle.classList.add('active');
+  sbToggle.textContent = '✕';
+}
+function closeSidebar() {
+  sidebarEl.classList.remove('open');
+  sbScrim.classList.remove('open');
+  sbToggle.classList.remove('active');
+  sbToggle.textContent = '☰';
+}
+sbToggle.addEventListener('click', () =>
+  sidebarEl.classList.contains('open') ? closeSidebar() : openSidebar()
+);
+sbScrim.addEventListener('click', closeSidebar);
+
 // ─── DATA LOADING ─────────────────────────────────────────────────────────────
 async function loadData() {
   const msg = document.getElementById('loading-msg');
   msg.textContent = 'Fetching tracks.json...';
-  const R2 = 'https://pub-d6fad642c9fc4063b8b0997cc8c90363.r2.dev';
+  const R2  = 'https://pub-d6fad642c9fc4063b8b0997cc8c90363.r2.dev';
   const res = await fetch(
-  window.location.protocol === 'file:' ? `${R2}/tracks.json` : '/tracks.json'
-);
+    window.location.protocol === 'file:' ? `${R2}/tracks.json` : '/tracks.json'
+  );
   if (!res.ok) throw new Error('tracks.json not found — run fish_pipeline.py first');
   tracksData = await res.json();
 
@@ -720,14 +536,12 @@ function drawOverlay(frameData) {
     const sx = vpx(bx), sy = vpy(by);
     const sw = bw * scaleX, sh = bh * scaleY;
 
-    // Clean box — thinner, more minimal
     ctx.strokeStyle = color;
     ctx.lineWidth   = 1.5;
     ctx.globalAlpha = 0.85;
     ctx.strokeRect(sx, sy, sw, sh);
     ctx.globalAlpha = 1;
 
-    // Corner ticks only (no full box fill)
     const cl = 8;
     ctx.lineWidth = 2;
     [[sx,sy,1,1],[sx+sw,sy,-1,1],[sx,sy+sh,1,-1],[sx+sw,sy+sh,-1,-1]].forEach(([cx2,cy2,dx,dy]) => {
@@ -735,14 +549,12 @@ function drawOverlay(frameData) {
       ctx.beginPath(); ctx.moveTo(cx2,cy2); ctx.lineTo(cx2,cy2+dy*cl); ctx.stroke();
     });
 
-    // Health dot — small, top-right outside box
     const hs = features.health_score || 75;
     ctx.beginPath();
     ctx.arc(sx + sw + 6, sy + 6, 4, 0, Math.PI * 2);
     ctx.fillStyle = hs > 75 ? '#16a34a' : hs > 50 ? '#d97706' : '#dc2626';
     ctx.fill();
 
-    // Heading arrow
     const hdg = features.heading_deg;
     if (hdg >= 0) {
       const ccx = sx + sw / 2, ccy = sy + sh / 2;
@@ -762,7 +574,6 @@ function drawOverlay(frameData) {
       ctx.globalAlpha = 1;
     }
 
-    // ID label — small pill above box
     ctx.font = '500 9px "DM Sans", sans-serif';
     const label = `#${tid}`;
     const tw = ctx.measureText(label).width;
@@ -798,34 +609,28 @@ function showTooltip(box, mx, my) {
   const shoal   = f.shoaling_index_px > 0 ? `${f.shoaling_index_px.toFixed(0)} px` : 'isolated';
 
   let html = '';
-
   html += `<div class="tt-section">Morphometrics</div><div class="tt-divider"></div>`;
-  html += row('Length',        `${f.length_mm?.toFixed(0)} mm`);
-  html += row('Body depth',    `${f.body_depth_mm?.toFixed(0)} mm`);
-  html += row('Est. weight',   `${f.weight_g?.toFixed(1)} g`);
-  html += row('Aspect ratio',  (f.aspect_ratio || 0).toFixed(2));
-  html += row('Condition K',   (f.body_condition_k || 0).toFixed(3), kClass(f.body_condition_k));
-  html += row('Growth stage',  f.growth_stage || '—');
-
+  html += row('Length',         `${f.length_mm?.toFixed(0)} mm`);
+  html += row('Body depth',     `${f.body_depth_mm?.toFixed(0)} mm`);
+  html += row('Est. weight',    `${f.weight_g?.toFixed(1)} g`);
+  html += row('Aspect ratio',   (f.aspect_ratio || 0).toFixed(2));
+  html += row('Condition K',    (f.body_condition_k || 0).toFixed(3), kClass(f.body_condition_k));
+  html += row('Growth stage',   f.growth_stage || '—');
   html += `<div class="tt-section">Health & Welfare</div><div class="tt-divider"></div>`;
-  html += row('Health score',  `${f.health_score}`, healthClass(f.health_score));
-  html += row('Tank depth',    `${f.tank_depth_pct?.toFixed(0)}%`);
-  html += row('Opercular BPM', `${f.opercular_bpm} ⚠`);
-
+  html += row('Health score',   `${f.health_score}`, healthClass(f.health_score));
+  html += row('Tank depth',     `${f.tank_depth_pct?.toFixed(0)}%`);
+  html += row('Opercular BPM',  `${f.opercular_bpm} ⚠`);
   html += `<div class="tt-section">Motion</div><div class="tt-divider"></div>`;
-  html += row('Velocity',      `${f.velocity_px_frame?.toFixed(1)} px/f`);
-  html += row('Acceleration',  `${f.acceleration_px_f2?.toFixed(2)} px/f²`);
-  html += row('Heading',       f.heading_deg >= 0 ? `${f.heading_deg.toFixed(0)}°` : '—');
-
+  html += row('Velocity',       `${f.velocity_px_frame?.toFixed(1)} px/f`);
+  html += row('Acceleration',   `${f.acceleration_px_f2?.toFixed(2)} px/f²`);
+  html += row('Heading',        f.heading_deg >= 0 ? `${f.heading_deg.toFixed(0)}°` : '—');
   html += `<div class="tt-section">Social</div><div class="tt-divider"></div>`;
-  html += row('Shoaling idx',  shoal);
-  html += row('Size pctile',   `${f.size_percentile?.toFixed(0)}%`);
-  html += row('Pop. size CV',  `${f.population_size_cv?.toFixed(1)}%`);
-
+  html += row('Shoaling idx',   shoal);
+  html += row('Size pctile',    `${f.size_percentile?.toFixed(0)}%`);
+  html += row('Pop. size CV',   `${f.population_size_cv?.toFixed(1)}%`);
   html += `<div class="tt-section">Growth Economics</div><div class="tt-divider"></div>`;
-  html += row('SGR',           `${f.sgr_pct_day?.toFixed(3)} %/day`);
+  html += row('SGR',            `${f.sgr_pct_day?.toFixed(3)} %/day`);
   html += row('Days to market', dtm);
-
   if (summary.avg_weight_g != null) {
     html += `<div class="tt-section">Track Summary</div><div class="tt-divider"></div>`;
     html += row('Avg weight',  `${summary.avg_weight_g?.toFixed(1)} g`);
@@ -834,32 +639,36 @@ function showTooltip(box, mx, my) {
     html += row('Proj. DTM',   summary.projected_days_to_market > 0 ? `${summary.projected_days_to_market} d` : '≥ mkt');
   }
 
-  document.getElementById('tt-title').textContent  = `Fish #${box.tid}`;
-  document.getElementById('tt-stage').textContent  = f.growth_stage || '';
-  document.getElementById('tt-body').innerHTML     = html;
+  document.getElementById('tt-title').textContent = `Fish #${box.tid}`;
+  document.getElementById('tt-stage').textContent = f.growth_stage || '';
+  document.getElementById('tt-body').innerHTML    = html;
   tooltip.style.display = 'block';
 
-  const tw = 256, th = tooltip.offsetHeight;
+  // Smart positioning — keep inside viewport, works on mobile too
+  const ttW = Math.min(256, window.innerWidth - 20);
+  const ttH = tooltip.offsetHeight;
   let tx = mx + 16, ty = my - 20;
-  if (tx + tw > window.innerWidth  - 10) tx = mx - tw - 16;
-  if (ty + th > window.innerHeight - 10) ty = window.innerHeight - th - 10;
-  tooltip.style.left = tx + 'px';
-  tooltip.style.top  = ty + 'px';
+  if (tx + ttW > window.innerWidth  - 10) tx = mx - ttW - 16;
+  if (tx < 10) tx = 10;
+  if (ty + ttH > window.innerHeight - 10) ty = window.innerHeight - ttH - 10;
+  if (ty < 10) ty = 10;
+  tooltip.style.width = ttW + 'px';
+  tooltip.style.left  = tx + 'px';
+  tooltip.style.top   = ty + 'px';
 }
 
 function hideTooltip() { tooltip.style.display = 'none'; }
 
-// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+// ─── SIDEBAR ──────────────────────────────────────────────────────────────────
 const STAGES = ['Fry','Fingerling','Juvenile','Sub-adult','Market-ready','Oversized'];
 
 function updateSidebar(frameData) {
   const fish = frameData.length;
   let totalBiomass = 0;
-  const lengths = [], stageCounts = {};
+  const stageCounts = {};
 
   for (const { features: f } of frameData) {
     totalBiomass += f.weight_g || 0;
-    lengths.push(f.length_mm || 0);
     stageCounts[f.growth_stage] = (stageCounts[f.growth_stage] || 0) + 1;
   }
 
@@ -871,7 +680,6 @@ function updateSidebar(frameData) {
   document.getElementById('m-cv').textContent      = (frameData[0]?.features.population_size_cv || 0).toFixed(1);
   document.getElementById('fish-count-live').textContent = `${fish} fish in frame`;
 
-  // Size bars
   document.getElementById('size-bars').innerHTML = STAGES.map(s => {
     const count = stageCounts[s] || 0;
     if (!count) return '';
@@ -883,7 +691,6 @@ function updateSidebar(frameData) {
     </div>`;
   }).join('');
 
-  // Track list
   document.getElementById('track-list').innerHTML = frameData.map(({ tid, features: f }) => {
     const color = PALETTE[tid % PALETTE.length];
     const hc    = f.health_score > 75 ? '#16a34a' : f.health_score > 50 ? '#d97706' : '#dc2626';
@@ -913,15 +720,14 @@ function renderLoop() {
 }
 
 // ─── TIMELINE ─────────────────────────────────────────────────────────────────
-const timelineEl = document.getElementById('timeline');
-const progressEl = document.getElementById('timeline-progress');
+const timelineEl  = document.getElementById('timeline');
+const progressEl  = document.getElementById('timeline-progress');
 const timeDisplay = document.getElementById('time-display');
 
 function fmt(s) {
   const m = Math.floor(s / 60), ss = Math.floor(s % 60);
   return `${m}:${ss.toString().padStart(2,'0')}`;
 }
-
 function updateTimeline(t) {
   const dur = video.duration || 1;
   progressEl.style.width = (t / dur * 100) + '%';
@@ -933,6 +739,17 @@ timelineEl.addEventListener('click', e => {
   video.currentTime = ((e.clientX - rect.left) / rect.width) * (video.duration || 0);
 });
 
+// Touch scrubbing on timeline
+let scrubbing = false;
+timelineEl.addEventListener('touchstart', e => { scrubbing = true; e.preventDefault(); }, { passive: false });
+timelineEl.addEventListener('touchmove',  e => {
+  if (!scrubbing) return;
+  const rect = timelineEl.getBoundingClientRect();
+  const pct  = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+  video.currentTime = pct * (video.duration || 0);
+}, { passive: true });
+timelineEl.addEventListener('touchend', () => { scrubbing = false; });
+
 // ─── HIT DETECTION ────────────────────────────────────────────────────────────
 hitLayer.addEventListener('mousemove', e => {
   const rect = hitLayer.getBoundingClientRect();
@@ -943,6 +760,18 @@ hitLayer.addEventListener('mousemove', e => {
   else     { hideTooltip(); hitLayer.style.cursor = 'crosshair'; }
 });
 hitLayer.addEventListener('mouseleave', hideTooltip);
+
+// Touch tap on fish box → show tooltip
+hitLayer.addEventListener('touchend', e => {
+  e.preventDefault();
+  const touch = e.changedTouches[0];
+  const rect  = hitLayer.getBoundingClientRect();
+  const mx    = touch.clientX - rect.left;
+  const my    = touch.clientY - rect.top;
+  const hit   = activeBoxes.find(b => mx >= b.sx && mx <= b.sx+b.sw && my >= b.sy && my <= b.sy+b.sh);
+  if (hit) showTooltip(hit, touch.clientX, touch.clientY);
+  else     hideTooltip();
+}, { passive: false });
 
 // ─── CONTROLS ─────────────────────────────────────────────────────────────────
 const btnPlay = document.getElementById('btn-play');
@@ -966,7 +795,7 @@ Object.entries(speedBtns).forEach(([id, rate]) => {
 
   video.addEventListener('error', () => {
     const code = video.error?.code;
-    const msgs = { 1:'Aborted', 2:'Network error', 3:'Decode error — convert to H.264 mp4', 4:'Format not supported — run: ffmpeg -i input.mov -vcodec libx264 output.mp4' };
+    const msgs = { 1:'Aborted', 2:'Network error', 3:'Decode error — convert to H.264 mp4', 4:'Format not supported' };
     document.getElementById('loading-msg').textContent = `Video error: ${msgs[code] || 'Unknown'} (code ${code})`;
     document.getElementById('loading-msg').style.color = '#dc2626';
     document.getElementById('loading').style.display   = 'flex';
@@ -979,7 +808,7 @@ Object.entries(speedBtns).forEach(([id, rate]) => {
     document.getElementById('app').style.display     = 'grid';
     resizeCanvas();
     renderLoop();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', () => { resizeCanvas(); closeSidebar(); });
   } catch(err) {
     document.getElementById('loading-msg').textContent = `Error: ${err.message}`;
     document.getElementById('loading-msg').style.color = '#dc2626';
