@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>samaki.ai — AI-Powered Aquaculture Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root {
+  --bg:       #fafaf8;
+  --surface:  #ffffff;
+  --ink:      #111009;
+  --ink-mid:  #5c5a53;
+  --ink-dim:  #9e9b92;
+  --border:   #e8e6df;
+  --blue:     #1d4ed8;
+  --blue-lt:  #eff4ff;
+  --green:    #15803d;
+  --teal:     #0e7490;
+  --accent:   #0a5c44;
+  --accent2:  #06b6d4;
+  --radius:   12px;
+  --serif:    'Instrument Serif', Georgia, serif;
+  --sans:     'DM Sans', system-ui, sans-serif;
+  --mono:     'DM Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ──────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  height: 60px;
+  background: rgba(250,250,248,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-left: 48px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 14px;
+  color: var(--ink-mid);
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--ink); }
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-ghost {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-mid);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { background: var(--border); color: var(--ink); }
+
+.btn-primary {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--ink);
+  border: none;
+  cursor: pointer;
+  padding: 8px 18px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: all 0.15s;
+  letter-spacing: -0.01em;
+}
+.btn-primary:hover { background: var(--accent); }
+
+/* ─── HERO ─────────────────────────────────────────── */
+.hero {
+  padding: 140px 40px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  background: #e6f4ee;
+  border: 1px solid #b6deca;
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin-bottom: 28px;
+  letter-spacing: 0.01em;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(44px, 6.5vw, 80px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  max-width: 860px;
+  margin-bottom: 24px;
+}
+.hero h1 em { font-style: italic; color: var(--accent); }
+
+.hero-sub {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink-mid);
+  max-width: 540px;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 72px;
+}
+
+.btn-hero {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--ink);
+  border: none;
+  cursor: pointer;
+  padding: 13px 26px;
+  border-radius: 9px;
+  text-decoration: none;
+  transition: all 0.18s;
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-hero:hover { background: var(--accent); transform: translateY(-1px); }
+
+.btn-hero-ghost {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-mid);
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  padding: 13px 22px;
+  border-radius: 9px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-hero-ghost:hover { border-color: var(--ink-mid); color: var(--ink); }
+
+.hero-stats {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  max-width: 640px;
+}
+.hero-stat {
+  flex: 1;
+  padding: 18px 22px;
+  border-right: 1px solid var(--border);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-num {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.hero-stat-label {
+  font-size: 12px;
+  color: var(--ink-dim);
+}
+
+/* ─── DEMO SECTION ─────────────────────────────────── */
+.demo-section {
+  background: var(--ink);
+  padding: 80px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.demo-section::before {
+  content:'';position:absolute;top:-200px;right:-200px;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(6,182,212,0.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.demo-section::after {
+  content:'';position:absolute;bottom:-200px;left:-100px;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(10,92,68,0.2) 0%,transparent 70%);
+  pointer-events:none;
+}
+.demo-inner { max-width:1100px;margin:0 auto;position:relative;z-index:1; }
+.demo-header {
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:40px;gap:40px;
+}
+.demo-header h2 {
+  font-family:var(--serif);
+  font-size:clamp(28px,3.5vw,44px);
+  color:#fff;line-height:1.1;letter-spacing:-0.02em;max-width:480px;
+}
+.demo-header h2 em { font-style:italic;color:var(--accent2); }
+.demo-header p { font-size:14px;color:rgba(255,255,255,0.5);max-width:260px;line-height:1.6;text-align:right; }
+
+.demo-screen {
+  background:#0d1117;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;overflow:hidden;
+}
+.demo-screen-bar {
+  background:#161b22;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:12px 16px;display:flex;align-items:center;gap:10px;
+}
+.demo-dots{display:flex;gap:5px;}
+.demo-dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);}
+.demo-url {
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);
+  border-radius:5px;padding:4px 14px;font-family:var(--mono);font-size:11px;
+  color:rgba(255,255,255,0.4);margin-left:8px;
+}
+.demo-content { display:grid;grid-template-columns:1fr 260px;height:380px; }
+.demo-video-area {
+  background:#060c10;position:relative;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.tank-bg {
+  width:100%;height:100%;
+  background:linear-gradient(180deg,#0a2540 0%,#0d3b5e 40%,#0a2540 100%);
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.tank-overlay-text { font-family:var(--mono);font-size:11px;color:rgba(0,229,255,0.6);letter-spacing:0.1em;text-align:center; }
+.tank-overlay-text div { margin-bottom:4px; }
+
+.det-box {
+  position:absolute;border:1.5px solid;border-radius:2px;
+  animation:float 4s ease-in-out infinite;
+}
+.det-box::before {
+  content:attr(data-id);position:absolute;top:-16px;left:0;
+  font-family:var(--mono);font-size:9px;color:inherit;white-space:nowrap;
+}
+.det-box::after {
+  content:'';position:absolute;bottom:-1px;right:-1px;
+  width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+}
+.det-box.b1{width:90px;height:44px;top:30%;left:15%;border-color:#00e5ff;color:#00e5ff;animation-delay:0s;}
+.det-box.b2{width:110px;height:52px;top:50%;left:38%;border-color:#00ff9d;color:#00ff9d;animation-delay:.8s;}
+.det-box.b3{width:75px;height:38px;top:20%;left:58%;border-color:#ffb300;color:#ffb300;animation-delay:1.4s;}
+.det-box.b4{width:60px;height:32px;top:65%;left:65%;border-color:#ff4da6;color:#ff4da6;animation-delay:2s;}
+.det-box.b5{width:80px;height:40px;top:40%;left:5%;border-color:#c8ff50;color:#c8ff50;animation-delay:.4s;}
+@keyframes float{0%,100%{transform:translate(0,0)}25%{transform:translate(3px,-4px)}50%{transform:translate(-2px,3px)}75%{transform:translate(4px,2px)}}
+
+.demo-sidebar {
+  background:#0d1117;border-left:1px solid rgba(255,255,255,0.06);
+  padding:16px;overflow:hidden;
+}
+.demo-sb-title { font-family:var(--mono);font-size:9px;letter-spacing:0.12em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:12px; }
+.demo-metric { background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:10px 12px;margin-bottom:8px; }
+.demo-metric-label { font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:3px;font-family:var(--mono); }
+.demo-metric-val { font-size:18px;font-weight:600;color:#fff;letter-spacing:-0.03em; }
+.demo-metric-val span { font-size:11px;font-weight:400;color:rgba(255,255,255,0.35);margin-left:2px; }
+.demo-track { display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;margin-bottom:4px; }
+.demo-track:hover { background:rgba(255,255,255,0.04); }
+.demo-track-dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
+.demo-track-name { font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.5);flex:1; }
+.demo-track-val  { font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.7); }
+
+/* ─── SECTION COMMON ───────────────────────────────── */
+.section-eyebrow {
+  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:16px;
+}
+.section-title {
+  font-family:var(--serif);font-size:clamp(30px,4vw,52px);
+  line-height:1.07;letter-spacing:-0.02em;color:var(--ink);
+  margin-bottom:16px;max-width:560px;
+}
+.section-title em { font-style:italic;color:var(--accent); }
+.section-sub {
+  font-size:16px;color:var(--ink-mid);font-weight:300;
+  line-height:1.65;max-width:480px;margin-bottom:64px;
+}
+
+/* ─── FEATURES ─────────────────────────────────────── */
+.features { padding:100px 40px;max-width:1100px;margin:0 auto; }
+
+.features-grid {
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2px;background:var(--border);border-radius:var(--radius);
+  overflow:hidden;border:1px solid var(--border);
+}
+.feature-card {
+  background:var(--surface);padding:32px 28px;transition:background 0.2s;
+}
+.feature-card:hover { background:#fdfdfb; }
+.feature-icon {
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;margin-bottom:18px;
+}
+.feature-card h3 { font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px;letter-spacing:-0.01em; }
+.feature-card p { font-size:13.5px;color:var(--ink-mid);line-height:1.65;font-weight:300; }
+.feature-tag {
+  display:inline-block;margin-top:16px;font-family:var(--mono);font-size:10px;
+  color:var(--ink-dim);background:var(--bg);border:1px solid var(--border);
+  border-radius:4px;padding:3px 8px;
+}
+
+/* ─── HOW IT WORKS ─────────────────────────────────── */
+.how { background:#f0f4f0;padding:100px 40px; }
+.how-inner { max-width:1100px;margin:0 auto; }
+.how-grid { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:60px; }
+.how-steps { display:flex;flex-direction:column;gap:0; }
+.how-step {
+  display:flex;gap:20px;padding:24px 0;border-bottom:1px solid #d8e0d8;
+  cursor:pointer;transition:all 0.2s;
+}
+.how-step:last-child { border-bottom:none; }
+.how-step:hover .how-step-title { color:var(--accent); }
+.how-step-num { font-family:var(--mono);font-size:11px;color:var(--ink-dim);padding-top:3px;width:24px;flex-shrink:0; }
+.how-step-title { font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:-0.01em;transition:color 0.2s; }
+.how-step-desc { font-size:13.5px;color:var(--ink-mid);line-height:1.65;font-weight:300; }
+
+.how-panel {
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;position:sticky;top:80px;
+}
+.how-panel-header {
+  background:var(--ink);padding:16px 20px;
+  display:flex;align-items:center;gap:10px;
+}
+.how-panel-header span { font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em; }
+.how-panel-body { padding:20px; }
+.fish-card {
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:16px;margin-bottom:10px;
+}
+.fish-card-header { display:flex;align-items:center;gap:10px;margin-bottom:12px; }
+.fish-id-badge { font-family:var(--mono);font-size:10px;font-weight:500;padding:3px 9px;border-radius:4px;color:#fff; }
+.fish-stage { font-size:11px;color:var(--ink-dim); }
+.fish-metrics { display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px; }
+.fish-metric-label { font-size:9px;color:var(--ink-dim);font-family:var(--mono);margin-bottom:2px;letter-spacing:0.05em; }
+.fish-metric-val { font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-0.02em; }
+.health-bar-wrap { margin-top:10px; }
+.health-bar-label { display:flex;justify-content:space-between;font-size:10px;color:var(--ink-dim);margin-bottom:5px;font-family:var(--mono); }
+.health-bar { height:3px;background:var(--border);border-radius:2px;overflow:hidden; }
+.health-bar-fill { height:100%;border-radius:2px; }
+
+/* ─── METRICS ──────────────────────────────────────── */
+.metrics-section { padding:100px 40px;max-width:1100px;margin:0 auto; }
+.metrics-row {
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
+  background:var(--border);border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--border);margin-bottom:2px;
+}
+.metrics-row.bottom { margin-bottom:0;border-top:none; }
+.metric-block { background:var(--surface);padding:28px 24px; }
+.metric-block-num {
+  font-family:var(--serif);font-size:42px;color:var(--ink);
+  letter-spacing:-0.03em;line-height:1;margin-bottom:6px;
+}
+.metric-block-num.green  { color:var(--green); }
+.metric-block-num.teal   { color:var(--teal);  }
+.metric-block-num.blue   { color:var(--blue);  }
+.metric-block-num.accent { color:var(--accent);}
+.metric-block-label { font-size:13px;color:var(--ink-mid);font-weight:400;line-height:1.5; }
+.metric-block-sub { font-family:var(--mono);font-size:10px;color:var(--ink-dim);margin-top:8px; }
+
+/* ─── PRICING ──────────────────────────────────────── */
+.pricing {
+  background: #f5f7f5;
+  padding: 100px 40px;
+}
+
+.pricing-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pricing-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 56px;
+}
+
+.pricing-toggle-label {
+  font-size: 13px;
+  color: var(--ink-mid);
+  font-weight: 400;
+}
+
+.pricing-toggle-label.active { color: var(--ink); font-weight: 500; }
+
+.toggle-track {
+  width: 42px; height: 24px;
+  background: var(--border);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid #d0cec7;
+}
+.toggle-track.on { background: var(--accent); border-color: var(--accent); }
+.toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-track.on .toggle-thumb { left: 21px; }
+
+.pricing-save-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+/* Cards */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.pricing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.pricing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+}
+
+.pricing-card.featured {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 20px 60px rgba(10,92,68,0.12);
+}
+
+.pricing-card-header {
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.pricing-card.featured .pricing-card-header {
+  background: linear-gradient(135deg, #f0f9f4 0%, #e6f4ee 100%);
+  border-bottom-color: #c9e8d8;
+}
+
+.pricing-plan-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 5px;
+  margin-bottom: 16px;
+}
+
+.plan-base   { background: #f4f4f0; color: var(--ink-mid); border: 1px solid var(--border); }
+.plan-pro    { background: var(--accent); color: #fff; }
+
+.featured-label {
+  position: absolute;
+  top: 20px; right: 24px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  background: #d1f5e4;
+  border: 1px solid #a7e8c4;
+  border-radius: 8px;
+  padding: 3px 10px;
+  font-family: var(--mono);
+  letter-spacing: 0.06em;
+}
+
+.pricing-plan-name {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.pricing-plan-desc {
+  font-size: 13px;
+  color: var(--ink-mid);
+  font-weight: 300;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.pricing-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.price-amount {
+  font-family: var(--serif);
+  font-size: 38px;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.price-suffix {
+  font-size: 13px;
+  color: var(--ink-dim);
+  font-weight: 300;
+}
+
+.price-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+
+.price-addon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-mid);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: var(--mono);
+}
+.price-addon-num { color: var(--ink); font-weight: 500; }
+
+/* Features list */
+.pricing-features {
+  padding: 28px 32px;
+}
+
+.pricing-features-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+  margin-bottom: 16px;
+}
+
+.pricing-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  line-height: 1.45;
+}
+.pricing-feature-item:last-child { border-bottom: none; }
+
+.feature-check {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.check-base { background: #f4f4f0; color: var(--ink-mid); border: 1px solid var(--border); }
+.check-pro  { background: var(--accent); color: #fff; }
+
+.pricing-cta-wrap {
+  padding: 0 32px 32px;
+}
+
+.btn-pricing {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px 20px;
+  border-radius: 9px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.18s;
+  letter-spacing: -0.01em;
+}
+.btn-pricing-base {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1.5px solid var(--border);
+}
+.btn-pricing-base:hover { border-color: var(--ink-mid); background: #f0ede6; }
+
+.btn-pricing-pro {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+}
+.btn-pricing-pro:hover { background: var(--accent); transform: translateY(-1px); }
+
+/* Pricing note */
+.pricing-note {
+  margin-top: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+.pricing-note-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.pricing-note strong { color: var(--ink); font-weight: 600; }
+
+/* ─── CTA ──────────────────────────────────────────── */
+.cta { background:var(--ink);padding:100px 40px;position:relative;overflow:hidden; }
+.cta::before {
+  content:'';position:absolute;top:-300px;left:50%;transform:translateX(-50%);
+  width:800px;height:800px;
+  background:radial-gradient(circle,rgba(10,92,68,0.25) 0%,transparent 65%);
+  pointer-events:none;
+}
+.cta-inner { max-width:700px;margin:0 auto;text-align:center;position:relative;z-index:1; }
+.cta h2 {
+  font-family:var(--serif);font-size:clamp(36px,5vw,60px);color:#fff;
+  line-height:1.07;letter-spacing:-0.02em;margin-bottom:20px;
+}
+.cta h2 em { font-style:italic;color:var(--accent2); }
+.cta p { font-size:17px;color:rgba(255,255,255,0.5);font-weight:300;line-height:1.65;margin-bottom:40px; }
+.cta-btns { display:flex;align-items:center;justify-content:center;gap:14px; }
+.btn-cta {
+  font-family:var(--sans);font-size:15px;font-weight:600;color:var(--ink);
+  background:#fff;border:none;cursor:pointer;padding:14px 28px;border-radius:9px;
+  text-decoration:none;transition:all 0.18s;letter-spacing:-0.01em;
+}
+.btn-cta:hover { background:var(--accent2);color:#fff;transform:translateY(-1px); }
+.btn-cta-ghost {
+  font-family:var(--sans);font-size:15px;font-weight:500;color:rgba(255,255,255,0.6);
+  background:none;border:1px solid rgba(255,255,255,0.15);cursor:pointer;
+  padding:14px 24px;border-radius:9px;text-decoration:none;transition:all 0.15s;
+}
+.btn-cta-ghost:hover { border-color:rgba(255,255,255,0.4);color:#fff; }
+
+/* ─── FOOTER ───────────────────────────────────────── */
+footer { background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding:40px; }
+.footer-inner {
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-logo { font-size:15px;font-weight:600;color:rgba(255,255,255,0.6);letter-spacing:-0.02em; }
+.footer-logo span { color:rgba(255,255,255,0.9); }
+.footer-copy { font-size:12px;color:rgba(255,255,255,0.25);font-family:var(--mono); }
+
+/* ─── ANIMATIONS ───────────────────────────────────── */
+.fade-up { opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease; }
+.fade-up.visible { opacity:1;transform:translateY(0); }
+.fade-up-delay-1 { transition-delay:0.1s; }
+.fade-up-delay-2 { transition-delay:0.2s; }
+.fade-up-delay-3 { transition-delay:0.3s; }
+.fade-up-delay-4 { transition-delay:0.4s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">🎣 samaki<span>.ai</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#metrics">Impact</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-right">
+    <!-- <a class="btn-ghost" href="#">Sign in</a> -->
+    <!-- <a class="btn-primary" href="#">Request demo →</a> -->
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge fade-up">
+    <div class="hero-badge-dot"></div>
+    Powered by YOLOv8 + DINOv2 Vision Models
+  </div>
+
+  <h1 class="fade-up fade-up-delay-1">
+    <em>Digital Twin</em> meets<br/>precision farming —<br/>for every fish you raise.
+  </h1>
+
+  <p class="hero-sub fade-up fade-up-delay-2">
+    samaki.ai combines computer vision, autonomous feeding hardware, and edge AI into a complete precision aquaculture system. Know your biomass, health, and harvest date — without touching the water.
+  </p>
+
+  <div class="hero-actions fade-up fade-up-delay-3">
+    <a class="btn-hero" href="#pricing">See pricing <span>→</span></a>
+    <a class="btn-hero-ghost" href="/demo">Watch live demo →</a>
+  </div>
+
+  <div class="hero-stats fade-up fade-up-delay-4">
+    <div class="hero-stat">
+      <div class="hero-stat-num">15–20%</div>
+      <div class="hero-stat-label">net profit increase via FCR optimisation</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">20+</div>
+      <div class="hero-stat-label">biological features per fish per frame</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">15 min</div>
+      <div class="hero-stat-label">early warning before oxygen crash</div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO SCREEN -->
+<section class="demo-section">
+  <div class="demo-inner">
+    <div class="demo-header">
+      <h2>Real-time tracking.<br/><em>Zero manual sampling.</em></h2>
+      <p>Hover over any fish to instantly surface its full biological profile — weight, health score, growth stage, days to harvest, and more.</p>
+    </div>
+
+    <div class="demo-screen">
+      <div class="demo-screen-bar">
+        <div class="demo-dots"><span></span><span></span><span></span></div>
+        <div class="demo-url">samaki.ai/demo — Tank A · Live</div>
+      </div>
+      <div class="demo-content">
+        <div class="demo-video-area">
+          <div class="tank-bg">
+            <div class="det-box b1" data-id="#1 · 312mm · 48g"></div>
+            <div class="det-box b2" data-id="#2 · 278mm · 34g"></div>
+            <div class="det-box b3" data-id="#3 · 195mm · 18g"></div>
+            <div class="det-box b4" data-id="#4 · 156mm · 9g"></div>
+            <div class="det-box b5" data-id="#5 · 340mm · 58g"></div>
+            <div class="tank-overlay-text">
+              <div style="color:rgba(0,229,255,0.3);font-size:9px;letter-spacing:0.2em;">MULTI-TRACK ANALYSIS · FRAME 1842</div>
+              <div style="color:rgba(0,229,255,0.15);font-size:8px;margin-top:4px;">YOLOv8n + ByteTrack · 21.4 fps</div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-sidebar">
+          <div class="demo-sb-title">Population</div>
+          <div class="demo-metric"><div class="demo-metric-label">TOTAL BIOMASS</div><div class="demo-metric-val">167.3 <span>g</span></div></div>
+          <div class="demo-metric"><div class="demo-metric-label">AVG WEIGHT</div><div class="demo-metric-val">33.4 <span>g</span></div></div>
+          <div class="demo-metric"><div class="demo-metric-label">SIZE CV</div><div class="demo-metric-val">12.1 <span>%</span></div></div>
+          <div style="margin-top:16px;margin-bottom:8px;"><div class="demo-sb-title">Active tracks</div></div>
+          <div class="demo-track"><div class="demo-track-dot" style="background:#00e5ff"></div><span class="demo-track-name">#1 · 312mm</span><span class="demo-track-val">87</span></div>
+          <div class="demo-track"><div class="demo-track-dot" style="background:#00ff9d"></div><span class="demo-track-name">#2 · 278mm</span><span class="demo-track-val">91</span></div>
+          <div class="demo-track"><div class="demo-track-dot" style="background:#ffb300"></div><span class="demo-track-name">#3 · 195mm</span><span class="demo-track-val">74</span></div>
+          <div class="demo-track"><div class="demo-track-dot" style="background:#ff4da6"></div><span class="demo-track-name">#4 · 156mm</span><span class="demo-track-val">68</span></div>
+          <div class="demo-track"><div class="demo-track-dot" style="background:#c8ff50"></div><span class="demo-track-name">#5 · 340mm</span><span class="demo-track-val">95</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-eyebrow fade-up">What we extract</div>
+  <h2 class="section-title fade-up fade-up-delay-1">Every feature your farm needs, <em>automatically.</em></h2>
+  <p class="section-sub fade-up fade-up-delay-2">A shared DINOv2 backbone with task-specific heads runs on your on-site mini GPU — no cloud dependency, no latency, full data ownership.</p>
+
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-icon" style="background:#e6f4ee;">🐟</div>
+      <h3>Morphometrics</h3>
+      <p>Body length, dorsal depth, aspect ratio, and Fulton's K condition factor — derived from bounding box geometry and calibrated to real-world mm via your tank's scale factor.</p>
+      <span class="feature-tag">length · weight · condition-K</span>
+    </div>
+    <div class="feature-card fade-up fade-up-delay-1">
+      <div class="feature-icon" style="background:#eff4ff;">⚖️</div>
+      <h3>Biomass Estimation</h3>
+      <p>Uses the allometric formula W = aL^b to estimate individual and population weight in real time. Track your total tank biomass without netting a single fish.</p>
+      <span class="feature-tag">W = aL^b · population sum</span>
+    </div>
+    <div class="feature-card fade-up fade-up-delay-2">
+      <div class="feature-icon" style="background:#fff7ed;">📈</div>
+      <h3>Growth & SGR Tracking</h3>
+      <p>Specific Growth Rate computed from per-track weight history. A dipping SGR with stable feed consumption is your first warning of a poor Feed Conversion Ratio.</p>
+      <span class="feature-tag">SGR · FCR · days-to-market</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon" style="background:#fdf2f8;">🫀</div>
+      <h3>Health Scoring</h3>
+      <p>Anomaly detection on body symmetry and texture flags pre-symptomatic disease — fin rot, lesions, parasitic loading — weeks before a human would notice.</p>
+      <span class="feature-tag">0–100 health index</span>
+    </div>
+    <div class="feature-card fade-up fade-up-delay-1">
+      <div class="feature-icon" style="background:#f0f9ff;">🌊</div>
+      <h3>Behavioural Intelligence</h3>
+      <p>Velocity, acceleration, heading, tank depth, and shoaling index reveal whether each fish is hungry, satiated, or bullying others — before it affects growth.</p>
+      <span class="feature-tag">velocity · heading · shoaling</span>
+    </div>
+    <div class="feature-card fade-up fade-up-delay-2">
+      <div class="feature-icon" style="background:#f0fdf4;">🌱</div>
+      <h3>Harvest Precision</h3>
+      <p>Real-time size distribution histogram with CV score. Know exactly what percentage of your population is at premium market weight — and harvest to the exact day.</p>
+      <span class="feature-tag">size CV · harvest window</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="section-eyebrow fade-up">Architecture</div>
+    <h2 class="section-title fade-up fade-up-delay-1">From camera pixel<br/>to <em>harvest decision.</em></h2>
+
+    <div class="how-grid">
+      <div class="how-steps">
+        <div class="how-step fade-up">
+          <div class="how-step-num">01</div>
+          <div class="how-step-content">
+            <div class="how-step-title">Detection & Tracking</div>
+            <div class="how-step-desc">YOLOv8 detects every fish each frame. ByteTrack assigns persistent Track IDs so the system builds a continuous digital history for each individual — even in crowded tanks.</div>
+          </div>
+        </div>
+        <div class="how-step fade-up fade-up-delay-1">
+          <div class="how-step-num">02</div>
+          <div class="how-step-content">
+            <div class="how-step-title">Feature Extraction</div>
+            <div class="how-step-desc">A shared DINOv2 backbone runs on each cropped fish image. Multi-task heads extract morphometrics, health anomalies, and texture features in a single forward pass on your edge GPU.</div>
+          </div>
+        </div>
+        <div class="how-step fade-up fade-up-delay-2">
+          <div class="how-step-num">03</div>
+          <div class="how-step-content">
+            <div class="how-step-title">Population Intelligence</div>
+            <div class="how-step-desc">Frame-level data is aggregated into population stats — total biomass, size CV, stage distribution — and cross-fish behavioural graphs flag dominant and stressed individuals.</div>
+          </div>
+        </div>
+        <div class="how-step fade-up fade-up-delay-3">
+          <div class="how-step-num">04</div>
+          <div class="how-step-content">
+            <div class="how-step-title">Autonomous Action</div>
+            <div class="how-step-desc">Feed rate is adjusted by the NEMA 17 stepper + auger to match the Hunger Index. Oxygen crash warnings reach your phone 15 minutes before a mortality event.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-panel fade-up fade-up-delay-2">
+        <div class="how-panel-header">
+          <span style="color:rgba(255,255,255,0.7)">🎣</span>
+          <span>DIGITAL TWIN · FISH #2</span>
+        </div>
+        <div class="how-panel-body">
+          <div class="fish-card">
+            <div class="fish-card-header">
+              <div class="fish-id-badge" style="background:#16a34a">#2</div>
+              <span class="fish-stage">Market-ready</span>
+            </div>
+            <div class="fish-metrics">
+              <div class="fish-metric"><div class="fish-metric-label">LENGTH</div><div class="fish-metric-val">312mm</div></div>
+              <div class="fish-metric"><div class="fish-metric-label">WEIGHT</div><div class="fish-metric-val">48.2g</div></div>
+              <div class="fish-metric"><div class="fish-metric-label">COND. K</div><div class="fish-metric-val">1.06</div></div>
+              <div class="fish-metric"><div class="fish-metric-label">VELOCITY</div><div class="fish-metric-val">4.1px</div></div>
+              <div class="fish-metric"><div class="fish-metric-label">DEPTH</div><div class="fish-metric-val">42%</div></div>
+              <div class="fish-metric"><div class="fish-metric-label">SHOAL</div><div class="fish-metric-val">82px</div></div>
+            </div>
+            <div class="health-bar-wrap">
+              <div class="health-bar-label"><span>Health score</span><span style="color:#16a34a">91 / 100</span></div>
+              <div class="health-bar"><div class="health-bar-fill" style="width:91%;background:#16a34a"></div></div>
+            </div>
+          </div>
+          <div class="fish-card">
+            <div class="fish-card-header">
+              <div class="fish-id-badge" style="background:#d97706">#4</div>
+              <span class="fish-stage">Sub-adult</span>
+            </div>
+            <div class="fish-metrics">
+              <div class="fish-metric"><div class="fish-metric-label">LENGTH</div><div class="fish-metric-val">196mm</div></div>
+              <div class="fish-metric"><div class="fish-metric-label">WEIGHT</div><div class="fish-metric-val">18.7g</div></div>
+              <div class="fish-metric"><div class="fish-metric-label">DTM</div><div class="fish-metric-val">38 days</div></div>
+            </div>
+            <div class="health-bar-wrap">
+              <div class="health-bar-label"><span>Health score</span><span style="color:#d97706">68 / 100</span></div>
+              <div class="health-bar"><div class="health-bar-fill" style="width:68%;background:#d97706"></div></div>
+            </div>
+          </div>
+          <div style="padding:12px 0 4px;font-family:var(--mono);font-size:10px;color:var(--ink-dim);">
+            Population size CV: <span style="color:var(--green);font-weight:500">12.1% — uniform batch ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics-section" id="metrics">
+  <div class="section-eyebrow fade-up">The numbers</div>
+  <h2 class="section-title fade-up fade-up-delay-1">Profit through<br/><em>precision.</em></h2>
+  <p class="section-sub fade-up fade-up-delay-2">Traditional aquaculture runs on averages and safety buffers. samaki.ai eliminates both.</p>
+
+  <div class="metrics-row fade-up">
+    <div class="metric-block"><div class="metric-block-num green">1.2</div><div class="metric-block-label">FCR achieved with AI-controlled just-in-time feeding</div><div class="metric-block-sub">vs. 1.5 industry average</div></div>
+    <div class="metric-block"><div class="metric-block-num accent">20%</div><div class="metric-block-label">increase in net profit from FCR reduction alone</div><div class="metric-block-sub">feed is the largest operating expense</div></div>
+    <div class="metric-block"><div class="metric-block-num teal">15 min</div><div class="metric-block-label">early warning before dissolved oxygen crash</div><div class="metric-block-sub">via opercular beat rate monitoring</div></div>
+    <div class="metric-block"><div class="metric-block-num blue">10×</div><div class="metric-block-label">ROI from preventing a single tank mortality event</div><div class="metric-block-sub">one crash can wipe a season's profit</div></div>
+  </div>
+  <div class="metrics-row bottom fade-up fade-up-delay-1">
+    <div class="metric-block"><div class="metric-block-num">20+</div><div class="metric-block-label">biological features extracted per fish per frame</div><div class="metric-block-sub">morphometrics, motion, social, growth, physiology</div></div>
+    <div class="metric-block"><div class="metric-block-num green">&lt;15%</div><div class="metric-block-label">size CV target for premium harvest window</div><div class="metric-block-sub">uniform batches command higher market price</div></div>
+    <div class="metric-block"><div class="metric-block-num teal">Real-time</div><div class="metric-block-label">biomass histogram — harvest to the exact day</div><div class="metric-block-sub">vs. weekly manual net sampling</div></div>
+    <div class="metric-block"><div class="metric-block-num accent">Edge</div><div class="metric-block-label">inference on-site, no cloud dependency</div><div class="metric-block-sub">mini GPU brain supports up to 20 units</div></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <div class="section-eyebrow fade-up">Pricing</div>
+    <h2 class="section-title fade-up fade-up-delay-1">Hardware + intelligence,<br/><em>one subscription.</em></h2>
+    <p class="section-sub fade-up fade-up-delay-2">Every plan includes the autonomous feeding mechanism, analytics dashboard, and on-site edge GPU brain — no cloud fees, no data leaving your farm.</p>
+
+    <!-- Toggle -->
+    <div class="pricing-toggle fade-up fade-up-delay-2">
+      <span class="pricing-toggle-label active" id="toggle-monthly-label">Monthly</span>
+      <div class="toggle-track" id="billing-toggle">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span class="pricing-toggle-label" id="toggle-annual-label">Annual</span>
+      <span class="pricing-save-badge" id="save-badge" style="display:none">Save 15%</span>
+    </div>
+
+    <div class="pricing-grid fade-up fade-up-delay-3">
+
+      <!-- BASE -->
+      <div class="pricing-card">
+        <div class="pricing-card-header">
+          <div class="pricing-plan-badge plan-base">Base</div>
+          <div class="pricing-plan-name">Precision Starter</div>
+          <div class="pricing-plan-desc">For small to mid-scale farms running standard tanks or ponds. Full digital twin intelligence with autonomous feeding control.</div>
+          <div class="pricing-price-block">
+            <div>
+              <div class="price-row">
+                <span class="price-amount" id="base-setup">$400</span>
+                <span class="price-suffix">one-time setup</span>
+              </div>
+              <div class="price-sub">Includes hardware installation + calibration</div>
+            </div>
+            <div style="margin-top:14px">
+              <div class="price-row">
+                <span class="price-amount" id="base-monthly">$50</span>
+                <span class="price-suffix" id="base-period">/ month</span>
+              </div>
+              <div class="price-sub">Software + analytics + support</div>
+            </div>
+            <div class="price-addon">
+              <span>+</span>
+              <span class="price-addon-num" id="base-addon">$10</span>
+              <span>per additional unit beyond first</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pricing-features">
+          <div class="pricing-features-title">What's included</div>
+          <div class="pricing-feature-item"><div class="feature-check check-base">✓</div>Autonomous feed control via NEMA 17 stepper + 12V auger</div>
+          <div class="pricing-feature-item"><div class="feature-check check-base">✓</div>On-site mini GPU edge brain (up to 20 units)</div>
+          <div class="pricing-feature-item"><div class="feature-check check-base">✓</div>20+ biological features per fish — weight, health, SGR, behaviour</div>
+          <div class="pricing-feature-item"><div class="feature-check check-base">✓</div>Real-time biomass & harvest window dashboard</div>
+          <div class="pricing-feature-item"><div class="feature-check check-base">✓</div>Oxygen crash early warning (15-min alert to phone)</div>
+          <div class="pricing-feature-item"><div class="feature-check check-base">✓</div>Standard camera vision (depth estimated from bounding box)</div>
+          <div class="pricing-feature-item" style="opacity:0.4"><div class="feature-check check-base">—</div>LiDAR depth sensing</div>
+          <div class="pricing-feature-item" style="opacity:0.4"><div class="feature-check check-base">—</div>High-accuracy 3D morphometrics for large/wide ponds</div>
+        </div>
+
+        <div class="pricing-cta-wrap">
+          <a class="btn-pricing btn-pricing-base" href="#">Get started with Base</a>
+        </div>
+      </div>
+
+      <!-- PRO -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-header">
+          <div class="featured-label">Most powerful</div>
+          <div class="pricing-plan-badge plan-pro">Pro</div>
+          <div class="pricing-plan-name">Precision Pro</div>
+          <div class="pricing-plan-desc">For larger operations, wide ponds, or farms that need the highest-accuracy depth and weight data. Includes paired LiDAR for true 3D body measurement.</div>
+          <div class="pricing-price-block">
+            <div>
+              <div class="price-row">
+                <span class="price-amount" id="pro-setup">$500</span>
+                <span class="price-suffix">one-time setup</span>
+              </div>
+              <div class="price-sub">Includes hardware + LiDAR pair installation</div>
+            </div>
+            <div style="margin-top:14px">
+              <div class="price-row">
+                <span class="price-amount" id="pro-monthly">$50</span>
+                <span class="price-suffix" id="pro-period">/ month</span>
+              </div>
+              <div class="price-sub">Software + analytics + priority support</div>
+            </div>
+            <div class="price-addon">
+              <span>+</span>
+              <span class="price-addon-num" id="pro-addon">$130</span>
+              <span>per additional unit beyond first</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pricing-features">
+          <div class="pricing-features-title">Everything in Base, plus</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>Paired LiDAR sensors for true depth measurement</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>High-accuracy 3D morphometrics — ideal for wide, deep ponds</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>Real-world scaled length + weight (mm-accurate, not estimated)</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>Enhanced opercular beat rate detection with depth compensation</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>Higher confidence biomass forecasting for market planning</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>Priority support + dedicated onboarding</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>On-site mini GPU edge brain (up to 20 units)</div>
+          <div class="pricing-feature-item"><div class="feature-check check-pro">✓</div>Autonomous feed control via NEMA 17 stepper + 12V auger</div>
+        </div>
+
+        <div class="pricing-cta-wrap">
+          <a class="btn-pricing btn-pricing-pro" href="#">Get started with Pro</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footnote -->
+    <div class="pricing-note fade-up fade-up-delay-4">
+      <div class="pricing-note-icon">ℹ️</div>
+      <div>
+        <strong>What counts as a "unit"?</strong> A unit is one camera + feeder assembly covering a single tank or pond zone. The first unit is included in your base subscription. Additional units are billed at the per-unit rate — <strong>$10/unit/month</strong> on Base and <strong>$130/unit/month</strong> on Pro (Pro's higher per-unit cost reflects the paired LiDAR hardware per zone). All units share the same on-site edge GPU brain, which supports up to 20 units total.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-inner">
+    <h2>Start building your<br/><em>Digital Twin</em> today.</h2>
+    <p>samaki.ai is in early access. Join aquaculture farms already using precision AI to increase yield, cut feed waste, and prevent mass mortality events.</p>
+    <div class="cta-btns">
+      <a class="btn-cta" href="#pricing">View pricing</a>
+      <a class="btn-cta-ghost" href="/demo">See live demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">🎣 samaki<span>.ai</span></div>
+    <div class="footer-copy">© 2026 samaki.ai · AI-powered precision aquaculture</div>
+  </div>
+</footer>
+
+<script>
+// Fade-up on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// Billing toggle
+const toggle    = document.getElementById('billing-toggle');
+const saveBadge = document.getElementById('save-badge');
+const mLabel    = document.getElementById('toggle-monthly-label');
+const aLabel    = document.getElementById('toggle-annual-label');
+let annual = false;
+
+const prices = {
+  base:  { setup: 400, monthly: 50,  addon: 10  },
+  pro:   { setup: 500, monthly: 50,  addon: 130 },
+};
+
+function updatePrices() {
+  const mult = annual ? 10.2 : 1; // ~15% off annualised as monthly equiv
+
+  const baseM  = annual ? Math.round(prices.base.monthly  * 10.2) : prices.base.monthly;
+  const proM   = annual ? Math.round(prices.pro.monthly   * 10.2) : prices.pro.monthly;
+  const baseA  = annual ? Math.round(prices.base.addon    * 10.2) : prices.base.addon;
+  const proA   = annual ? Math.round(prices.pro.addon     * 10.2) : prices.pro.addon;
+  const period = annual ? '/ year' : '/ month';
+
+  document.getElementById('base-setup').textContent   = `$${prices.base.setup}`;
+  document.getElementById('base-monthly').textContent = annual ? `$${baseM}` : `$${prices.base.monthly}`;
+  document.getElementById('base-period').textContent  = period;
+  document.getElementById('base-addon').textContent   = annual ? `$${baseA}` : `$${prices.base.addon}`;
+
+  document.getElementById('pro-setup').textContent    = `$${prices.pro.setup}`;
+  document.getElementById('pro-monthly').textContent  = annual ? `$${proM}` : `$${prices.pro.monthly}`;
+  document.getElementById('pro-period').textContent   = period;
+  document.getElementById('pro-addon').textContent    = annual ? `$${proA}` : `$${prices.pro.addon}`;
+}
+
+toggle.addEventListener('click', () => {
+  annual = !annual;
+  toggle.classList.toggle('on', annual);
+  mLabel.classList.toggle('active', !annual);
+  aLabel.classList.toggle('active', annual);
+  saveBadge.style.display = annual ? 'inline-block' : 'none';
+  updatePrices();
+});
+</script>
+</body>
+</html>

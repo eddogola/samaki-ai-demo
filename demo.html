@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Samaki.ai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #f5f4f0;
+    --surface:   #ffffff;
+    --surface2:  #fafaf8;
+    --border:    #e4e2db;
+    --border2:   #ccc9bf;
+    --ink:       #1a1916;
+    --ink-mid:   #6b6860;
+    --ink-dim:   #a8a59d;
+    --accent:    #2563eb;
+    --accent-lt: #eff4ff;
+    --green:     #16a34a;
+    --amber:     #d97706;
+    --red:       #dc2626;
+    --mono:      'DM Mono', monospace;
+    --sans:      'DM Sans', sans-serif;
+    --radius:    6px;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow: hidden;
+  }
+
+  /* ── Layout ───────────────────────────────────── */
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 52px 1fr 80px;
+    grid-template-areas:
+      "header  header"
+      "viewer  sidebar"
+      "footer  footer";
+    height: 100vh;
+    gap: 0;
+    background: var(--border);
+  }
+
+  /* ── Header ───────────────────────────────────── */
+  #header {
+    grid-area: header;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .logo-name {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-name span {
+    color: var(--accent);
+  }
+
+  .header-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+  }
+
+  .header-chip {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mid);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  #status-label {
+    font-size: 11px;
+    color: var(--ink-mid);
+    font-weight: 500;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.35; }
+  }
+
+  /* ── Viewer ───────────────────────────────────── */
+  #viewer {
+    grid-area: viewer;
+    background: #111;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #video {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+
+  #overlay-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+  }
+
+  #hit-layer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    cursor: crosshair;
+  }
+
+  /* ── Tooltip ──────────────────────────────────── */
+  #tooltip {
+    position: fixed;
+    display: none;
+    pointer-events: none;
+    z-index: 1000;
+    width: 256px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .tt-header {
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tt-stage-badge {
+    font-size: 9px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.15);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+
+  .tt-body {
+    padding: 8px 12px;
+  }
+
+  .tt-section {
+    font-family: var(--mono);
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    margin: 10px 0 5px;
+    text-transform: uppercase;
+  }
+  .tt-section:first-child { margin-top: 2px; }
+
+  .tt-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 0 5px;
+  }
+
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5px 0;
+  }
+
+  .tt-label {
+    font-size: 11px;
+    color: var(--ink-mid);
+  }
+
+  .tt-value {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .tt-value.good  { color: var(--green); }
+  .tt-value.warn  { color: var(--amber); }
+  .tt-value.alert { color: var(--red);   }
+
+  /* ── Sidebar ──────────────────────────────────── */
+  #sidebar {
+    grid-area: sidebar;
+    background: var(--surface2);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .sb-section {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+
+  .sb-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Metrics grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 10px;
+  }
+
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--ink-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .metric-value {
+    font-family: var(--sans);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .metric-unit {
+    font-size: 10px;
+    color: var(--ink-dim);
+    font-weight: 400;
+    margin-left: 1px;
+  }
+
+  /* Bar distribution */
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+
+  .bar-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-mid);
+    width: 56px;
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    position: absolute;
+    left: 0; top: 0; height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .bar-val {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-mid);
+    width: 20px;
+    text-align: right;
+  }
+
+  /* Track list */
+  #track-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .track-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background 0.1s;
+    border-left: 2px solid transparent;
+  }
+
+  .track-item:hover {
+    background: var(--accent-lt);
+    border-left-color: var(--accent);
+  }
+
+  .track-swatch {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .track-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .track-stage {
+    font-size: 9px;
+    color: var(--ink-dim);
+  }
+
+  .track-health {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    min-width: 24px;
+    text-align: right;
+  }
+
+  /* ── Footer ───────────────────────────────────── */
+  #footer {
+    grid-area: footer;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+    gap: 10px;
+  }
+
+  #timeline-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #time-display {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mid);
+    width: 84px;
+    flex-shrink: 0;
+  }
+
+  #timeline {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #timeline-progress {
+    position: absolute;
+    left: 0; top: 0; height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    pointer-events: none;
+    transition: width 0.05s linear;
+  }
+
+  #controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--ink-mid);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.12s;
+    letter-spacing: 0.03em;
+  }
+
+  button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-lt);
+  }
+
+  button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  #fish-count-live {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-left: auto;
+  }
+
+  /* ── Loading ───────────────────────────────────── */
+  #loading {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    gap: 16px;
+  }
+
+  .loading-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .loading-logo-icon { font-size: 28px; }
+
+  .loading-logo-name {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+  }
+
+  .loading-logo-name span { color: var(--accent); }
+
+  .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #loading-msg {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.06em;
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loading-logo">
+    <span class="loading-logo-icon">🎣</span>
+    <span class="loading-logo-name">samaki<span>.ai</span></span>
+  </div>
+  <div class="spinner"></div>
+  <div id="loading-msg">Loading track data...</div>
+</div>
+
+<div id="app" style="display:none;">
+
+  <header id="header">
+    <div class="logo">
+      <span class="logo-icon">🎣</span>
+      <span class="logo-name">samaki<span>.ai</span></span>
+    </div>
+    <div class="header-divider"></div>
+    <span class="header-chip">MULTI-TRACK</span>
+    <span class="header-chip" id="meta-fps">— fps</span>
+    <span class="header-chip" id="meta-scale">— mm/px</span>
+    <div class="header-right">
+      <div id="status-dot"></div>
+      <span id="status-label">Live playback</span>
+    </div>
+  </header>
+
+  <div id="viewer">
+    <video id="video" src="https://pub-d6fad642c9fc4063b8b0997cc8c90363.r2.dev/swimming_fish.mp4" preload="auto" playsinline>
+      Your browser does not support this video format. Try converting to H.264 mp4.
+    </video>
+    <canvas id="overlay-canvas"></canvas>
+    <div id="hit-layer"></div>
+  </div>
+
+  <aside id="sidebar">
+    <div class="sb-section">
+      <div class="sb-title">Population</div>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">In Frame</div>
+          <div><span class="metric-value" id="m-fish">—</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Biomass</div>
+          <div><span class="metric-value" id="m-biomass">—</span><span class="metric-unit">g</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Avg Weight</div>
+          <div><span class="metric-value" id="m-avgwt">—</span><span class="metric-unit">g</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Size CV</div>
+          <div><span class="metric-value" id="m-cv">—</span><span class="metric-unit">%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-title">Size Distribution</div>
+      <div id="size-bars"></div>
+    </div>
+
+    <div class="sb-section" style="padding-bottom:8px; flex:1; overflow:hidden; display:flex; flex-direction:column;">
+      <div class="sb-title">Active Tracks</div>
+      <div id="track-list"></div>
+    </div>
+  </aside>
+
+  <footer id="footer">
+    <div id="timeline-wrap">
+      <span id="time-display">0:00 / 0:00</span>
+      <div id="timeline">
+        <div id="timeline-progress"></div>
+      </div>
+    </div>
+    <div id="controls">
+      <button id="btn-play">▶ Play</button>
+      <button id="btn-025">0.25×</button>
+      <button id="btn-05">0.5×</button>
+      <button id="btn-1" class="active">1×</button>
+      <button id="btn-2">2×</button>
+      <span id="fish-count-live">—</span>
+    </div>
+  </footer>
+
+</div>
+
+<div id="tooltip">
+  <div class="tt-header">
+    <span id="tt-title">Fish #—</span>
+    <span class="tt-stage-badge" id="tt-stage">—</span>
+  </div>
+  <div class="tt-body" id="tt-body"></div>
+</div>
+
+<script>
+// ─── PALETTE — distinct, works on light backgrounds ───────────────────────────
+const PALETTE = [
+  '#2563eb','#16a34a','#d97706',
+  '#db2777','#7c3aed','#0891b2',
+  '#ea580c','#65a30d'
+];
+
+let tracksData     = null;
+let frameIndex     = {};
+let trackSummaries = {};
+let videoFps       = 30;
+let videoMeta      = {};
+
+// ─── DATA LOADING ─────────────────────────────────────────────────────────────
+async function loadData() {
+  const msg = document.getElementById('loading-msg');
+  msg.textContent = 'Fetching tracks.json...';
+  const R2 = 'https://pub-d6fad642c9fc4063b8b0997cc8c90363.r2.dev';
+  const res = await fetch(
+  window.location.protocol === 'file:' ? `${R2}/tracks.json` : '/tracks.json'
+);
+  if (!res.ok) throw new Error('tracks.json not found — run fish_pipeline.py first');
+  tracksData = await res.json();
+
+  videoMeta = tracksData.meta || {};
+  videoFps  = videoMeta.fps || 30;
+
+  document.getElementById('meta-fps').textContent   = `${videoFps.toFixed(1)} fps`;
+  document.getElementById('meta-scale').textContent = `${videoMeta.scale_mm_per_px || 1} mm/px`;
+
+  msg.textContent = 'Building frame index...';
+  for (const [tid, track] of Object.entries(tracksData.tracks)) {
+    trackSummaries[tid] = track.summary;
+    for (const f of track.frames) {
+      if (!frameIndex[f.frame]) frameIndex[f.frame] = [];
+      frameIndex[f.frame].push({ tid: parseInt(tid), features: f });
+    }
+  }
+}
+
+// ─── FRAME LOOKUP ─────────────────────────────────────────────────────────────
+const PROCESS_EVERY_N = 2;
+
+function getFrameData(currentTime) {
+  const frameNo = Math.round(currentTime * videoFps);
+  let best = null, bestDist = Infinity;
+  for (const key of Object.keys(frameIndex)) {
+    const d = Math.abs(parseInt(key) - frameNo);
+    if (d < bestDist) { bestDist = d; best = key; }
+    if (d === 0) break;
+  }
+  if (bestDist > PROCESS_EVERY_N * 3) return [];
+  return frameIndex[best] || [];
+}
+
+// ─── CANVAS ───────────────────────────────────────────────────────────────────
+const video    = document.getElementById('video');
+const canvas   = document.getElementById('overlay-canvas');
+const ctx      = canvas.getContext('2d');
+const hitLayer = document.getElementById('hit-layer');
+
+let videoRect = null;
+let scaleX = 1, scaleY = 1;
+let activeBoxes = [];
+
+function resizeCanvas() {
+  const viewerEl   = document.getElementById('viewer');
+  const viewerRect = viewerEl.getBoundingClientRect();
+  const videoRect2 = video.getBoundingClientRect();
+
+  canvas.width  = viewerRect.width;
+  canvas.height = viewerRect.height;
+  canvas.style.width  = viewerRect.width  + 'px';
+  canvas.style.height = viewerRect.height + 'px';
+
+  const offX    = videoRect2.left - viewerRect.left;
+  const offY    = videoRect2.top  - viewerRect.top;
+  const renderW = videoRect2.width;
+  const renderH = videoRect2.height;
+
+  const vw = video.videoWidth  || renderW;
+  const vh = video.videoHeight || renderH;
+  scaleX    = renderW / vw;
+  scaleY    = renderH / vh;
+  videoRect = { offX, offY, renderW, renderH };
+}
+
+function vpx(x) { return videoRect.offX + x * scaleX; }
+function vpy(y) { return videoRect.offY + y * scaleY; }
+
+function drawOverlay(frameData) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  activeBoxes = [];
+
+  for (const { tid, features } of frameData) {
+    const color = PALETTE[tid % PALETTE.length];
+    const [bx, by, bw, bh] = features.bbox_xywh;
+    const sx = vpx(bx), sy = vpy(by);
+    const sw = bw * scaleX, sh = bh * scaleY;
+
+    // Clean box — thinner, more minimal
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = 1.5;
+    ctx.globalAlpha = 0.85;
+    ctx.strokeRect(sx, sy, sw, sh);
+    ctx.globalAlpha = 1;
+
+    // Corner ticks only (no full box fill)
+    const cl = 8;
+    ctx.lineWidth = 2;
+    [[sx,sy,1,1],[sx+sw,sy,-1,1],[sx,sy+sh,1,-1],[sx+sw,sy+sh,-1,-1]].forEach(([cx2,cy2,dx,dy]) => {
+      ctx.beginPath(); ctx.moveTo(cx2,cy2); ctx.lineTo(cx2+dx*cl,cy2); ctx.strokeStyle=color; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx2,cy2); ctx.lineTo(cx2,cy2+dy*cl); ctx.stroke();
+    });
+
+    // Health dot — small, top-right outside box
+    const hs = features.health_score || 75;
+    ctx.beginPath();
+    ctx.arc(sx + sw + 6, sy + 6, 4, 0, Math.PI * 2);
+    ctx.fillStyle = hs > 75 ? '#16a34a' : hs > 50 ? '#d97706' : '#dc2626';
+    ctx.fill();
+
+    // Heading arrow
+    const hdg = features.heading_deg;
+    if (hdg >= 0) {
+      const ccx = sx + sw / 2, ccy = sy + sh / 2;
+      const al  = Math.min(sw, sh) * 0.35;
+      const ex  = ccx + al * Math.cos(hdg * Math.PI / 180);
+      const ey  = ccy + al * Math.sin(hdg * Math.PI / 180);
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath(); ctx.moveTo(ccx, ccy); ctx.lineTo(ex, ey);
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+      const angle = Math.atan2(ey - ccy, ex - ccx);
+      ctx.beginPath();
+      ctx.moveTo(ex, ey);
+      ctx.lineTo(ex - 6*Math.cos(angle-0.4), ey - 6*Math.sin(angle-0.4));
+      ctx.lineTo(ex - 6*Math.cos(angle+0.4), ey - 6*Math.sin(angle+0.4));
+      ctx.closePath();
+      ctx.fillStyle = color; ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // ID label — small pill above box
+    ctx.font = '500 9px "DM Sans", sans-serif';
+    const label = `#${tid}`;
+    const tw = ctx.measureText(label).width;
+    const lx = sx, ly = sy - 14;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(lx - 3, ly - 2, tw + 8, 13, 3);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.fillText(label, lx + 1, ly + 8);
+
+    activeBoxes.push({ tid, sx, sy, sw, sh, features, color });
+  }
+}
+
+// ─── TOOLTIP ──────────────────────────────────────────────────────────────────
+const tooltip = document.getElementById('tooltip');
+
+function healthClass(v) { return v > 75 ? 'good' : v > 50 ? 'warn' : 'alert'; }
+function kClass(v)      { return v >= 0.9 ? 'good' : v >= 0.7 ? 'warn' : 'alert'; }
+
+function row(label, value, cls = '') {
+  return `<div class="tt-row">
+    <span class="tt-label">${label}</span>
+    <span class="tt-value ${cls}">${value}</span>
+  </div>`;
+}
+
+function showTooltip(box, mx, my) {
+  const f       = box.features;
+  const summary = trackSummaries[box.tid] || {};
+  const dtm     = f.days_to_market > 0 ? `${f.days_to_market.toFixed(0)} days` : '≥ market';
+  const shoal   = f.shoaling_index_px > 0 ? `${f.shoaling_index_px.toFixed(0)} px` : 'isolated';
+
+  let html = '';
+
+  html += `<div class="tt-section">Morphometrics</div><div class="tt-divider"></div>`;
+  html += row('Length',        `${f.length_mm?.toFixed(0)} mm`);
+  html += row('Body depth',    `${f.body_depth_mm?.toFixed(0)} mm`);
+  html += row('Est. weight',   `${f.weight_g?.toFixed(1)} g`);
+  html += row('Aspect ratio',  (f.aspect_ratio || 0).toFixed(2));
+  html += row('Condition K',   (f.body_condition_k || 0).toFixed(3), kClass(f.body_condition_k));
+  html += row('Growth stage',  f.growth_stage || '—');
+
+  html += `<div class="tt-section">Health & Welfare</div><div class="tt-divider"></div>`;
+  html += row('Health score',  `${f.health_score}`, healthClass(f.health_score));
+  html += row('Tank depth',    `${f.tank_depth_pct?.toFixed(0)}%`);
+  html += row('Opercular BPM', `${f.opercular_bpm} ⚠`);
+
+  html += `<div class="tt-section">Motion</div><div class="tt-divider"></div>`;
+  html += row('Velocity',      `${f.velocity_px_frame?.toFixed(1)} px/f`);
+  html += row('Acceleration',  `${f.acceleration_px_f2?.toFixed(2)} px/f²`);
+  html += row('Heading',       f.heading_deg >= 0 ? `${f.heading_deg.toFixed(0)}°` : '—');
+
+  html += `<div class="tt-section">Social</div><div class="tt-divider"></div>`;
+  html += row('Shoaling idx',  shoal);
+  html += row('Size pctile',   `${f.size_percentile?.toFixed(0)}%`);
+  html += row('Pop. size CV',  `${f.population_size_cv?.toFixed(1)}%`);
+
+  html += `<div class="tt-section">Growth Economics</div><div class="tt-divider"></div>`;
+  html += row('SGR',           `${f.sgr_pct_day?.toFixed(3)} %/day`);
+  html += row('Days to market', dtm);
+
+  if (summary.avg_weight_g != null) {
+    html += `<div class="tt-section">Track Summary</div><div class="tt-divider"></div>`;
+    html += row('Avg weight',  `${summary.avg_weight_g?.toFixed(1)} g`);
+    html += row('Avg health',  `${summary.avg_health_score}`, healthClass(summary.avg_health_score));
+    html += row('Avg OBR',     `${summary.avg_opercular_bpm} BPM`);
+    html += row('Proj. DTM',   summary.projected_days_to_market > 0 ? `${summary.projected_days_to_market} d` : '≥ mkt');
+  }
+
+  document.getElementById('tt-title').textContent  = `Fish #${box.tid}`;
+  document.getElementById('tt-stage').textContent  = f.growth_stage || '';
+  document.getElementById('tt-body').innerHTML     = html;
+  tooltip.style.display = 'block';
+
+  const tw = 256, th = tooltip.offsetHeight;
+  let tx = mx + 16, ty = my - 20;
+  if (tx + tw > window.innerWidth  - 10) tx = mx - tw - 16;
+  if (ty + th > window.innerHeight - 10) ty = window.innerHeight - th - 10;
+  tooltip.style.left = tx + 'px';
+  tooltip.style.top  = ty + 'px';
+}
+
+function hideTooltip() { tooltip.style.display = 'none'; }
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+const STAGES = ['Fry','Fingerling','Juvenile','Sub-adult','Market-ready','Oversized'];
+
+function updateSidebar(frameData) {
+  const fish = frameData.length;
+  let totalBiomass = 0;
+  const lengths = [], stageCounts = {};
+
+  for (const { features: f } of frameData) {
+    totalBiomass += f.weight_g || 0;
+    lengths.push(f.length_mm || 0);
+    stageCounts[f.growth_stage] = (stageCounts[f.growth_stage] || 0) + 1;
+  }
+
+  const avgWt = fish > 0 ? totalBiomass / fish : 0;
+
+  document.getElementById('m-fish').textContent    = fish;
+  document.getElementById('m-biomass').textContent = totalBiomass.toFixed(1);
+  document.getElementById('m-avgwt').textContent   = avgWt.toFixed(1);
+  document.getElementById('m-cv').textContent      = (frameData[0]?.features.population_size_cv || 0).toFixed(1);
+  document.getElementById('fish-count-live').textContent = `${fish} fish in frame`;
+
+  // Size bars
+  document.getElementById('size-bars').innerHTML = STAGES.map(s => {
+    const count = stageCounts[s] || 0;
+    if (!count) return '';
+    const pct = (count / Math.max(fish, 1) * 100).toFixed(0);
+    return `<div class="bar-row">
+      <span class="bar-label">${s.length > 7 ? s.slice(0,7) : s}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="bar-val">${count}</span>
+    </div>`;
+  }).join('');
+
+  // Track list
+  document.getElementById('track-list').innerHTML = frameData.map(({ tid, features: f }) => {
+    const color = PALETTE[tid % PALETTE.length];
+    const hc    = f.health_score > 75 ? '#16a34a' : f.health_score > 50 ? '#d97706' : '#dc2626';
+    return `<div class="track-item" data-tid="${tid}">
+      <div class="track-swatch" style="background:${color}"></div>
+      <span class="track-name">#${tid} · ${f.length_mm?.toFixed(0)}mm · ${f.weight_g?.toFixed(1)}g</span>
+      <span class="track-stage">${(f.growth_stage||'').slice(0,4)}</span>
+      <span class="track-health" style="color:${hc}">${f.health_score}</span>
+    </div>`;
+  }).join('');
+}
+
+// ─── RENDER LOOP ──────────────────────────────────────────────────────────────
+let lastDrawTime = -1;
+
+function renderLoop() {
+  const t = video.currentTime;
+  if (t !== lastDrawTime) {
+    lastDrawTime = t;
+    resizeCanvas();
+    const frameData = getFrameData(t);
+    drawOverlay(frameData);
+    updateSidebar(frameData);
+    updateTimeline(t);
+  }
+  requestAnimationFrame(renderLoop);
+}
+
+// ─── TIMELINE ─────────────────────────────────────────────────────────────────
+const timelineEl = document.getElementById('timeline');
+const progressEl = document.getElementById('timeline-progress');
+const timeDisplay = document.getElementById('time-display');
+
+function fmt(s) {
+  const m = Math.floor(s / 60), ss = Math.floor(s % 60);
+  return `${m}:${ss.toString().padStart(2,'0')}`;
+}
+
+function updateTimeline(t) {
+  const dur = video.duration || 1;
+  progressEl.style.width = (t / dur * 100) + '%';
+  timeDisplay.textContent = `${fmt(t)} / ${fmt(dur)}`;
+}
+
+timelineEl.addEventListener('click', e => {
+  const rect = timelineEl.getBoundingClientRect();
+  video.currentTime = ((e.clientX - rect.left) / rect.width) * (video.duration || 0);
+});
+
+// ─── HIT DETECTION ────────────────────────────────────────────────────────────
+hitLayer.addEventListener('mousemove', e => {
+  const rect = hitLayer.getBoundingClientRect();
+  const mx   = e.clientX - rect.left;
+  const my   = e.clientY - rect.top;
+  const hit  = activeBoxes.find(b => mx >= b.sx && mx <= b.sx+b.sw && my >= b.sy && my <= b.sy+b.sh);
+  if (hit) { showTooltip(hit, e.clientX, e.clientY); hitLayer.style.cursor = 'pointer'; }
+  else     { hideTooltip(); hitLayer.style.cursor = 'crosshair'; }
+});
+hitLayer.addEventListener('mouseleave', hideTooltip);
+
+// ─── CONTROLS ─────────────────────────────────────────────────────────────────
+const btnPlay = document.getElementById('btn-play');
+btnPlay.addEventListener('click', () => {
+  if (video.paused) { video.play();  btnPlay.textContent = '⏸ Pause'; }
+  else              { video.pause(); btnPlay.textContent = '▶ Play';  }
+});
+
+const speedBtns = { '025': 0.25, '05': 0.5, '1': 1.0, '2': 2.0 };
+Object.entries(speedBtns).forEach(([id, rate]) => {
+  document.getElementById(`btn-${id}`).addEventListener('click', () => {
+    video.playbackRate = rate;
+    document.querySelectorAll('#controls button').forEach(b => b.classList.remove('active'));
+    document.getElementById(`btn-${id}`).classList.add('active');
+  });
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+(async function init() {
+  video.addEventListener('loadedmetadata', resizeCanvas);
+
+  video.addEventListener('error', () => {
+    const code = video.error?.code;
+    const msgs = { 1:'Aborted', 2:'Network error', 3:'Decode error — convert to H.264 mp4', 4:'Format not supported — run: ffmpeg -i input.mov -vcodec libx264 output.mp4' };
+    document.getElementById('loading-msg').textContent = `Video error: ${msgs[code] || 'Unknown'} (code ${code})`;
+    document.getElementById('loading-msg').style.color = '#dc2626';
+    document.getElementById('loading').style.display   = 'flex';
+    document.getElementById('app').style.display       = 'none';
+  });
+
+  try {
+    await loadData();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display     = 'grid';
+    resizeCanvas();
+    renderLoop();
+    window.addEventListener('resize', resizeCanvas);
+  } catch(err) {
+    document.getElementById('loading-msg').textContent = `Error: ${err.message}`;
+    document.getElementById('loading-msg').style.color = '#dc2626';
+    console.error(err);
+  }
+})();
+</script>
+</body>
+</html>

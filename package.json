@@ -1,0 +1,23 @@
+{
+  "name": "site",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/eddogola/samaki-ai-demo#readme",
+  "bugs": {
+    "url": "https://github.com/eddogola/samaki-ai-demo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eddogola/samaki-ai-demo.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "wrangler": "^4.69.0"
+  }
+}
